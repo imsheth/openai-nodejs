@@ -27,6 +27,7 @@ app.listen(port, () => {
 
 // POST /text_generation/chat_completions that calls OpenAI API
 // API reference https://platform.openai.com/docs/api-reference/chat/create
+// API library https://github.com/openai/openai-node/blob/master/api.md
 app.post("/text_generation/chat_completions", async (request, response) => {
   const { chats } = request.body;
 
@@ -45,6 +46,7 @@ app.post("/text_generation/chat_completions", async (request, response) => {
 
 // POST /image_generation/images that calls OpenAI API
 // API reference https://platform.openai.com/docs/api-reference/images/create
+// API library https://github.com/openai/openai-node/blob/master/api.md
 app.post("/image_generation/images", async (request, response) => {
   const generatedImage = await openai.images.generate({
     model: "dall-e-3",
@@ -63,6 +65,7 @@ app.post("/image_generation/images", async (request, response) => {
 
 // // POST /vision/images that calls OpenAI API
 // API reference https://platform.openai.com/docs/api-reference/chat/create
+// API library https://github.com/openai/openai-node/blob/master/api.md
 app.post("/vision/images", async (request, response) => {
   const visionComprehension = await openai.chat.completions.create({
     model: "gpt-4o-mini",
@@ -91,6 +94,7 @@ app.post("/vision/images", async (request, response) => {
 
 // POST /text_to_speech/audio_speeches that calls OpenAI API
 // API reference https://platform.openai.com/docs/api-reference/audio/createSpeech
+// API library https://github.com/openai/openai-node/blob/master/api.md
 // Supported languages https://platform.openai.com/docs/guides/text-to-speech/supported-languages
 // You can generate spoken audio in these languages by providing the input text in the language of your choice.
 // Afrikaans, Arabic, Armenian, Azerbaijani, Belarusian, Bosnian, Bulgarian, Catalan,
@@ -123,6 +127,7 @@ app.post("/text_to_speech/audio_speeches", async (request, response) => {
 
 // POST /speech_to_text/audio_transcrptions that calls OpenAI API
 // API reference https://platform.openai.com/docs/api-reference/audio/createTranscription
+// API library https://github.com/openai/openai-node/blob/master/api.md
 // Thought not specified, it doesn't support Gujarati and lacks accuracy for Hindi
 app.post("/speech_to_text/audio_transcrptions", async (request, response) => {
   const speechTranscription = await openai.audio.transcriptions.create({
@@ -142,6 +147,7 @@ app.post("/speech_to_text/audio_transcrptions", async (request, response) => {
 
 // POST /speech_to_text/audio_translations that calls OpenAI API
 // API reference https://platform.openai.com/docs/api-reference/audio/createTranslation
+// API library https://github.com/openai/openai-node/blob/master/api.md
 app.post("/speech_to_text/audio_translations", async (request, response) => {
   const speechTranslation = await openai.audio.translations.create({
     file: fs.createReadStream(generatedSpeechFile),
@@ -155,5 +161,73 @@ app.post("/speech_to_text/audio_translations", async (request, response) => {
     output: {
       speechTranslated: speechTranslation.text,
     },
+  });
+});
+
+// POST /vector_embeddings/embeddings that calls OpenAI API
+// API reference https://platform.openai.com/docs/api-reference/embeddings/create
+// API library https://github.com/openai/openai-node/blob/master/api.md
+app.post("/vector_embeddings/embeddings", async (request, response) => {
+  const embedding = await openai.embeddings.create({
+    model: "text-embedding-3-small",
+    input: request.body.input_text.replace(/[\n\r]/g, " "),
+    encoding_format: "float",
+    dimensions: 512,
+  });
+
+  console.log(embedding);
+
+  response.json({
+    output: {
+      embeddedVector: embedding.data[0].embedding,
+    },
+  });
+});
+
+// POST /moderation/moderations that calls OpenAI API
+// API reference https://platform.openai.com/docs/api-reference/moderations
+// API library https://github.com/openai/openai-node/blob/master/api.md
+// Text moderation works only for English
+app.post("/moderation/moderations", async (request, response) => {
+  let inputContent = [];
+  inputContent.push({ type: "text", text: request.body.input_text });
+  if (request.body.input_url) {
+    inputContent.push({
+      type: "image_url",
+      image_url: {
+        url: request.body.input_url,
+      },
+    });
+  }
+  console.log("inputContent ", inputContent);
+  const moderation = await openai.moderations.create({
+    model: "omni-moderation-latest",
+    input: inputContent,
+  });
+
+  response.json({
+    output: {
+      moderationAnalysis: moderation.results,
+    },
+  });
+});
+
+// POST /reasoning/chat_completions that calls OpenAI API
+// API reference https://platform.openai.com/docs/api-reference/chat
+// API library https://github.com/openai/openai-node/blob/master/api.md
+// Text moderation works only for English
+app.post("/reasoning/chat_completions", async (request, response) => {
+  const completion = await openai.chat.completions.create({
+    model: "o1-preview",
+    messages: [
+      {
+        role: "user",
+        content: request.body.input_text.trim(),
+      },
+    ],
+  });
+
+  response.json({
+    output: completion.choices[0].message,
   });
 });
