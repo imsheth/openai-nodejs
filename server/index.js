@@ -11,6 +11,7 @@ const app = express();
 const port = process.env["OPENAI_API_SERVER_PORT"];
 const openai = new OpenAI();
 const generatedSpeechFile = path.resolve("./generated_speech.mp3");
+let threadRunStatusInterval;
 
 // Parse incoming requests with JSON payloads
 // Body parser is a middleware for Node.js that parses incoming request bodies and makes them available as objects in the req.body property
@@ -215,7 +216,7 @@ app.post("/moderation/moderations", async (request, response) => {
 // POST /reasoning/chat_completions that calls OpenAI API
 // API reference https://platform.openai.com/docs/api-reference/chat
 // API library https://github.com/openai/openai-node/blob/master/api.md
-// Text moderation works only for English
+// Text moderation works for English and not Hindi/Gujarati
 app.post("/reasoning/chat_completions", async (request, response) => {
   const completion = await openai.chat.completions.create({
     model: "o1-preview",
@@ -230,4 +231,71 @@ app.post("/reasoning/chat_completions", async (request, response) => {
   response.json({
     output: completion.choices[0].message,
   });
+});
+
+// POST /assistant/assistants that calls OpenAI API
+// API reference https://platform.openai.com/docs/api-reference/assistants/createAssistant
+// API library https://github.com/openai/openai-node/blob/master/api.md
+app.post("/assistant/assistants", async (request, response) => {
+  const assistant = await openai.beta.assistants.create({
+    name: request.body.input_assistant_name,
+    description: request.body.input_assistant_desc,
+    model: "gpt-4o",
+    // tools: [{ type: "code_interpreter" }],
+  });
+
+  response.json({
+    output: assistant,
+  });
+});
+
+// POST /assistant/threads that calls OpenAI API
+// API reference https://platform.openai.com/docs/api-reference/threads
+// API library https://github.com/openai/openai-node/blob/master/api.md
+app.post("/assistant/threads", async (request, response) => {
+  const thread = await openai.beta.threads.create();
+
+  response.json({
+    output: thread,
+  });
+});
+
+async function checkThreadRunStatus(res, threadId, runId) {
+  const threadRunStatusResponse = await openai.beta.threads.runs.retrieve(threadId, runId);
+  console.log("Current thread run status: " + threadRunStatusResponse.status);
+
+  if (threadRunStatusResponse.status == "completed") {
+    clearInterval(threadRunStatusInterval);
+
+    const threadMessages = await openai.beta.threads.messages.list(threadId);
+    let messages = [];
+
+    threadMessages.body.data.forEach((message) => {
+      messages.push(message.content);
+    });
+
+    res.json({ messages });
+  }
+}
+
+// POST /assistant/messages that calls OpenAI API
+// API reference https://platform.openai.com/docs/api-reference/messages
+// API library https://github.com/openai/openai-node/blob/master/api.md
+app.post("/assistant/messages", async (request, response) => {
+  const message = await openai.beta.threads.messages.create(
+    request.body.thread_id,
+    {
+      role: "user", // "user" or "assistant" only
+      content: request.body.input_message,
+    }
+  );
+
+  const threadRun = await openai.beta.threads.runs.create(message.thread_id, {
+    assistant_id: request.body.assistant_id,
+  });
+
+  // Check status and return response if run is completed
+  threadRunStatusInterval = setInterval(() => {
+    checkThreadRunStatus(response, message.thread_id, threadRun.id);
+  }, 2500);
 });
