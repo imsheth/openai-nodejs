@@ -117,7 +117,7 @@ app.post("/text_to_speech/audio_speeches", async (request, response) => {
   const buffer = Buffer.from(await generatedSpeech.arrayBuffer());
   await fs.promises.writeFile(generatedSpeechFile, buffer);
 
-  console.log(generatedSpeechFile);
+  console.log("generatedSpeechFile ", generatedSpeechFile);
 
   response.json({
     output: {
@@ -137,7 +137,7 @@ app.post("/speech_to_text/audio_transcrptions", async (request, response) => {
     response_format: "json",
   });
 
-  console.log(speechTranscription);
+  console.log("speechTranscription ", speechTranscription);
 
   response.json({
     output: {
@@ -156,7 +156,7 @@ app.post("/speech_to_text/audio_translations", async (request, response) => {
     response_format: "json",
   });
 
-  console.log(speechTranslation);
+  console.log("speechTranslation ", speechTranslation);
 
   response.json({
     output: {
@@ -176,7 +176,7 @@ app.post("/vector_embeddings/embeddings", async (request, response) => {
     dimensions: 512,
   });
 
-  console.log(embedding);
+  console.log("embedding ", embedding);
 
   response.json({
     output: {
@@ -262,7 +262,7 @@ app.post("/assistant/threads", async (request, response) => {
 
 async function checkThreadRunStatus(res, threadId, runId) {
   const threadRunStatusResponse = await openai.beta.threads.runs.retrieve(threadId, runId);
-  console.log("Current thread run status: " + threadRunStatusResponse.status);
+  console.log("threadRunStatusResponse.status " + threadRunStatusResponse.status);
 
   if (threadRunStatusResponse.status == "completed") {
     clearInterval(threadRunStatusInterval);
