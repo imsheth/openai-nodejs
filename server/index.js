@@ -188,7 +188,7 @@ app.post("/vector_embeddings/embeddings", async (request, response) => {
 // POST /moderation/moderations that calls OpenAI API
 // API reference https://platform.openai.com/docs/api-reference/moderations
 // API library https://github.com/openai/openai-node/blob/master/api.md
-// Text moderation works only for English
+// Text moderation works for English and not Hindi/Gujarati
 app.post("/moderation/moderations", async (request, response) => {
   let inputContent = [];
   inputContent.push({ type: "text", text: request.body.input_text });
@@ -216,7 +216,6 @@ app.post("/moderation/moderations", async (request, response) => {
 // POST /reasoning/chat_completions that calls OpenAI API
 // API reference https://platform.openai.com/docs/api-reference/chat
 // API library https://github.com/openai/openai-node/blob/master/api.md
-// Text moderation works for English and not Hindi/Gujarati
 app.post("/reasoning/chat_completions", async (request, response) => {
   const completion = await openai.chat.completions.create({
     model: "o1-preview",
