@@ -1,0 +1,358 @@
+{
+	"info": {
+		"_postman_id": "2cd46050-cc1b-4ef6-8404-2868ee5f40ad",
+		"name": "imsheth-openai-nodejs-react",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21912799"
+	},
+	"item": [
+		{
+			"name": "/text_generation/chat_completions",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"chats\": [\n        {\n            \"role\": \"user\",\n            \"content\": \"Explain programming to a kid\"\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/text_generation/chat_completions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"text_generation",
+						"chat_completions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/image_generation/images",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"prompt_message\": \"Generate a wellbeing journal for samvedna wellbeing, which is a wellbeing organization focusing on mental health\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/image_generation/images",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"image_generation",
+						"images"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/vision/images",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"image_url\": \"https://oaidalleapiprodscus.blob.core.windows.net/private/org-MT7HHwad0PFV3TbRZSDynlt5/user-dMrEkaS4C06MEaJ70k0ksN7d/img-0BtgSZ1KJRMrVNzZVGDJxhDV.png?st=2024-10-29T15%3A00%3A31Z&se=2024-10-29T17%3A00%3A31Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-10-29T06%3A22%3A33Z&ske=2024-10-30T06%3A22%3A33Z&sks=b&skv=2024-08-04&sig=8anQofEWXPJeUyFQXO2watQ22IrtQwDeaf7j0Qqwf8c%3D\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/vision/images",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"vision",
+						"images"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/text_to_speech/audio_speeches",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"prompt_message\": \"प्रमुख ने एक बड़ा दावा किया है\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/text_to_speech/audio_speeches",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"text_to_speech",
+						"audio_speeches"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/speech_to_text/audio_transcrptions",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/speech_to_text/audio_transcrptions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"speech_to_text",
+						"audio_transcrptions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/speech_to_text/audio_translations",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/speech_to_text/audio_translations",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"speech_to_text",
+						"audio_translations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/vector_embeddings/embeddings",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"input_text\": \"A quick brown fox jumps over the lazy dog\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/vector_embeddings/embeddings",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"vector_embeddings",
+						"embeddings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/moderation/moderations",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"input_text\": \"A quick brown fox bhenchod jumps over the lazy dog\",\n    \"input_url\": \"https://images.theconversation.com/files/246412/original/file-20181120-161624-1wcgwgg.jpg?ixlib=rb-4.1.0&q=45&auto=format&w=926&fit=clip\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/moderation/moderations",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"moderation",
+						"moderations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/reasoning/chat_completions",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"input_text\": \"Write a bash script that takes a matrix represented as a string with format '[1,2],[3,4],[5,6]' and prints the transpose in the same format.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/reasoning/chat_completions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"reasoning",
+						"chat_completions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/assistant/assistants",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"input_assistant_name\": \"Psybo\",\n    \"input_assistant_desc\": \"You're a very good Psychologist. Answer my problem in a friendly way and based on facts. You can talk in psychology terms.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/assistant/assistants",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"assistant",
+						"assistants"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/assistant/threads",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/assistant/threads",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"assistant",
+						"threads"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/assistant/messages",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"assistant_id\": \"asst_jqsmC15vozMCsYAQgcUXEgH1\",\n    \"thread_id\": \"thread_SnlOBKXghgoTtEaMqC9GuSE8\",\n    \"input_message\": \"My names is John, I don't feel good after my dog passed away\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/assistant/messages",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"assistant",
+						"messages"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
