@@ -15,6 +15,70 @@ function App() {
   const [audioTranscription, setAudioTranscription] = useState("");
   const [audioTranslation, setAudioTranslation] = useState("");
 
+  const [vectorEmbeddings, setVectorEmbeddings] = useState("");
+  const [generatedVectorEmbedding, setGeneratedVectorEmbedding] = useState("");
+
+  const [moderationText, setModerationText] = useState("");
+  const [moderationURL, setModerationURL] = useState("");
+  const [moderationResult, setModerationResult] = useState(null);
+
+  const performModeration = async (e, inputText, inputURL) => {
+    e.preventDefault();
+
+    try {
+      const request1 = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          input_text: inputText,
+          input_url: inputURL,
+        }),
+      };
+
+      const moderationAnalysis = await fetch(
+        `http://localhost:8080/moderation/moderations`,
+        request1
+      );
+      const data1 = await moderationAnalysis.json();
+
+      if (data1.output.moderationAnalysis) {
+        setModerationResult(data1.output.moderationAnalysis);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const generateEmbedding = async (e, inputText) => {
+    e.preventDefault();
+
+    try {
+      const request1 = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          input_text: inputText,
+        }),
+      };
+
+      const generatedEmbedding = await fetch(
+        `http://localhost:8080/vector_embeddings/embeddings`,
+        request1
+      );
+      const data1 = await generatedEmbedding.json();
+
+      if (data1.output.embeddedVector) {
+        setGeneratedVectorEmbedding(data1.output.embeddedVector.join(", "));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const generateAndAnalyzeAudio = async (e, inputText) => {
     e.preventDefault();
 
@@ -254,6 +318,72 @@ function App() {
           </p>
         )}
       </section>
+
+      <hr />
+
+      <section>
+        <h2>
+          /vector_embeddings/embeddings
+        </h2>
+
+        <input
+          type="text"
+          name="vectorText"
+          value={vectorEmbeddings}
+          placeholder="Text to generate vector embeddings"
+          onChange={(e) => setVectorEmbeddings(e.target.value)}
+        />
+        <button
+          style={{ width: "100%" }}
+          onClick={(e) => generateEmbedding(e, vectorEmbeddings)}
+        >
+          Generate generate vector embeddings
+        </button>
+        {generatedVectorEmbedding && generatedVectorEmbedding.length > 0 && (
+          <p>
+            <span>Generated vector embedding - {generatedVectorEmbedding}</span>
+          </p>
+        )}
+      </section>
+
+      <hr />
+
+      <section>
+        <h2>
+          /moderation/moderations
+        </h2>
+
+        <input
+          type="text"
+          name="moderationText"
+          value={moderationText}
+          placeholder="Text to moderate"
+          onChange={(e) => setModerationText(e.target.value)}
+        />
+        <input
+          type="text"
+          name="moderationURL"
+          value={moderationURL}
+          placeholder="URL to moderate"
+          onChange={(e) => setModerationURL(e.target.value)}
+        />
+        <button
+          style={{ width: "100%" }}
+          onClick={(e) => performModeration(e, moderationText, moderationURL)}
+        >
+          Generate moderation analysis
+        </button>
+        {moderationResult && moderationResult.length > 0 && (
+          <p>
+            <span>Generated moderation - content to be flagged - {moderationResult[0].flagged.toString()}</span><br /><br />
+            <span>Generated moderation - content analysis categories -</span><br /><br />
+            {Object.entries(moderationResult[0].categories).map(([key, value]) => (<div>{`${key}: ${value}`}</div>))}
+            <span>Generated moderation - content analysis scores -</span><br /><br />
+            {Object.entries(moderationResult[0].category_scores).map(([key, value]) => (<div>{`${key}: ${value}`}</div>))}
+          </p>
+        )}
+      </section>
+
     </main>
   );
 }
