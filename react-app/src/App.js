@@ -22,6 +22,40 @@ function App() {
   const [moderationURL, setModerationURL] = useState("");
   const [moderationResult, setModerationResult] = useState(null);
 
+  const [assistantChatMessage, setAssistantChatMessage] = useState("");
+  const [assistantChats, setAssistantChats] = useState([]);
+
+  const assistantChat = async (e, inputText) => {
+    e.preventDefault();
+
+    try {
+      const request1 = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          assistant_id: '<Your assistant id here>',
+          thread_id: '<Your assistant id here>',
+          input_message: inputText,
+          
+        }),
+      };
+
+      const assistantResponse = await fetch(
+        `http://localhost:8080/assistant/messages`,
+        request1
+      );
+      const data1 = await assistantResponse.json();
+
+      if (data1.messages) {
+        setAssistantChats(data1.messages.flat().reverse().map(i => i.text.value));
+      }
+    } catch (error) {
+      console.log(error);
+    }  
+  }
+
   const performModeration = async (e, inputText, inputURL) => {
     e.preventDefault();
 
@@ -322,9 +356,7 @@ function App() {
       <hr />
 
       <section>
-        <h2>
-          /vector_embeddings/embeddings
-        </h2>
+        <h2>/vector_embeddings/embeddings</h2>
 
         <input
           type="text"
@@ -349,9 +381,7 @@ function App() {
       <hr />
 
       <section>
-        <h2>
-          /moderation/moderations
-        </h2>
+        <h2>/moderation/moderations</h2>
 
         <input
           type="text"
@@ -375,13 +405,86 @@ function App() {
         </button>
         {moderationResult && moderationResult.length > 0 && (
           <p>
-            <span>Generated moderation - content to be flagged - {moderationResult[0].flagged.toString()}</span><br /><br />
-            <span>Generated moderation - content analysis categories -</span><br /><br />
-            {Object.entries(moderationResult[0].categories).map(([key, value]) => (<div>{`${key}: ${value}`}</div>))}
-            <span>Generated moderation - content analysis scores -</span><br /><br />
-            {Object.entries(moderationResult[0].category_scores).map(([key, value]) => (<div>{`${key}: ${value}`}</div>))}
+            <span>
+              Generated moderation - content to be flagged -{" "}
+              {moderationResult[0].flagged.toString()}
+            </span>
+            <br />
+            <br />
+            <span>Generated moderation - content analysis categories -</span>
+            <br />
+            <br />
+            {Object.entries(moderationResult[0].categories).map(
+              ([key, value]) => (
+                <div>{`${key}: ${value}`}</div>
+              )
+            )}
+            <span>Generated moderation - content analysis scores -</span>
+            <br />
+            <br />
+            {Object.entries(moderationResult[0].category_scores).map(
+              ([key, value]) => (
+                <div>{`${key}: ${value}`}</div>
+              )
+            )}
           </p>
         )}
+      </section>
+
+      <hr />
+
+      <section>
+        <h2>/reasoning/chat_completions</h2>
+        <p>
+          <span>
+            o1 models are currently in beta with limited features and access to
+            developers in certain usage tiers only
+          </span>
+        </p>
+      </section>
+
+      <hr />
+
+      <section>
+        <h2>/assistant/assistants, /assistant/threads</h2>
+        <p>
+          <span>
+            Use postman to create assistant and thread to avoid duplications
+          </span>
+        </p>
+      </section>
+
+      <hr />
+
+      <section>
+        <h2>/assistant/messages</h2>
+        
+        {assistantChats && assistantChats.length
+          ? assistantChats.map((chat, index) => (
+              <p key={index} className={index % 2 ? "user_msg" : ""}>
+                <span>
+                  {index % 2 ? <b>User : </b> : <b>OpenAI : </b>}
+                </span>
+                <span>{chat}</span>
+              </p>
+            ))
+          : ""}
+
+        {/* <div className={isTyping ? "" : "hide"}>
+          <p>
+            <i>{isTyping ? "Typing" : ""}</i>
+          </p>
+        </div> */}
+
+        <form action="" onSubmit={(e) => assistantChat(e, assistantChatMessage)}>
+          <input
+            type="text"
+            name="assistantChatMessage"
+            value={assistantChatMessage}
+            placeholder="Chat message with existing thread and assistant"
+            onChange={(e) => setAssistantChatMessage(e.target.value)}
+          />
+        </form>
       </section>
 
     </main>
